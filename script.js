@@ -83,7 +83,7 @@ function endGame() {
   document.getElementById("score--" + activePlayer).textContent =
     scoreInThisRound + prevScore;
   document
-    .querySelector(".player--subtext")
+    .getElementById("sub-" + activePlayer)
     .classList.add("player--subtext--win");
   document.getElementById("sub-" + activePlayer).textContent =
     "Yay! I won!! 🎉";
