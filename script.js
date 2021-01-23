@@ -89,7 +89,7 @@ function endGame() {
     "Yay! I won!! 🎉";
   activePlayer ? (activePlayer = 0) : (activePlayer = 1);
   document.getElementById("sub-" + activePlayer).textContent =
-    "Nooo! I lost ☹️";
+    "Nooo! I lost 🙁";
 }
 
 function changeActivePlayer(keepScore) {
