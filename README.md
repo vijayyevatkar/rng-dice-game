@@ -12,4 +12,4 @@ You can play this game here -> [Dice Game](https://vijayyevatkar.github.io/rng-d
 4. If the user holds, his current score gets added to the total score and the turn moves to the other user.
 5. Whoever reaches the score of 50 first, wins the game!
 
-**Enjoy**
+**Enjoy!!**
