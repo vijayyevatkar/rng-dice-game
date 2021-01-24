@@ -1,37 +1,15 @@
-## Welcome to GitHub Pages
+# Welcome to RNG Dice Game
 
-You can use the [editor on GitHub](https://github.com/vijayyevatkar/rng-dice-game/edit/main/README.md) to maintain and preview the content for your website in Markdown files.
+You can play this game here -> [Dice Game](https://vijayyevatkar.github.io/rng-dice-game/)
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+## Game Rules
 
-### Markdown
+1. Each player rolls the dice, starting with Player 1.
+2. The user, after each roll of the dice, can decide to roll again, or hold.
+3. When a dice is rolled, 2 things can happen:
+   - If 1 is rolled, the user's current score resets to 0, and the turn automatically switches to the other user.
+   - Any other number gets added to the current score of the user playing.
+4. If the user holds, his current score gets added to the total score and the turn moves to the other user.
+5. Whoever reaches the score of 50 first, wins the game!
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/vijayyevatkar/rng-dice-game/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+**Enjoy**
