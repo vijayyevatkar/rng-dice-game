@@ -21,13 +21,13 @@ document.querySelector(".btn--roll").addEventListener("click", buttonRoll);
 document.querySelector(".btn--hold").addEventListener("click", buttonHold);
 
 function setupNewGame() {
-  console.log("Starting new game!");
   continueGame = true;
   scores = [0, 0];
   scoreInThisRound = 0;
   activePlayer = 0;
   prevScore = 0;
-  document.querySelector(".dice").style.display = "none";
+  document.querySelector(".dice0").style.display = "none";
+  document.querySelector(".dice1").style.display = "none";
   document.getElementById("current--0").textContent = 0;
   document.getElementById("current--1").textContent = 0;
   document.getElementById("score--0").textContent = 0;
@@ -45,9 +45,13 @@ function setupNewGame() {
 
 function buttonRoll() {
   if (!continueGame) return;
+  let otherPlayer = activePlayer - 1;
+  if (otherPlayer < 0) otherPlayer = 1;
   var diceNum = Math.floor(Math.random() * 6) + 1;
-  var diceDOM = document.querySelector(".dice");
+  var diceDOM = document.querySelector(".dice" + activePlayer);
+  var diceDOMHide = document.querySelector(".dice" + otherPlayer);
   diceDOM.style.display = "block";
+  diceDOMHide.style.display = "none";
   diceDOM.src = "dice-" + diceNum + ".png";
   if (diceNum === 1) {
     document.getElementById("sub-" + activePlayer).textContent =
@@ -64,8 +68,6 @@ function buttonRoll() {
     } else {
       document.getElementById("sub-" + activePlayer).textContent =
         "Yay! I rolled a " + diceNum;
-      let otherPlayer = activePlayer - 1;
-      if (otherPlayer < 0) otherPlayer = 1;
       document.getElementById("sub-" + otherPlayer).textContent =
         "Waiting for my turn!";
     }
@@ -128,6 +130,5 @@ function buttonHold() {
   if (!continueGame) return;
   document.getElementById("sub-" + activePlayer).textContent =
     "I will hold for now.";
-
   changeActivePlayer(1);
 }
