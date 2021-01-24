@@ -56,6 +56,9 @@ function buttonRoll() {
   } else {
     scoreInThisRound += diceNum;
     let currentTotal = scoreInThisRound + prevScore;
+    document.getElementById(
+      "current--" + activePlayer
+    ).textContent = scoreInThisRound;
     if (currentTotal >= finalScore) {
       endGame();
     } else {
@@ -66,9 +69,6 @@ function buttonRoll() {
       document.getElementById("sub-" + otherPlayer).textContent =
         "Waiting for my turn!";
     }
-    document.getElementById(
-      "current--" + activePlayer
-    ).textContent = scoreInThisRound;
   }
 }
 
