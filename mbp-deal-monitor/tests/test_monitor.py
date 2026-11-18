@@ -1,9 +1,12 @@
 from __future__ import annotations
 
+import asyncio
 import tempfile
 import unittest
 from dataclasses import replace
 from pathlib import Path
+
+import httpx
 
 from mbp_monitor.catalog import TRACKED_SPECS
 from mbp_monitor.config import Settings
@@ -13,6 +16,7 @@ from mbp_monitor.models import AlertTier, Condition, DealListing
 from mbp_monitor.monitors.amazon import parse_amazon_dp_html
 from mbp_monitor.monitors.apple_refurb import parse_apple_refurb_html
 from mbp_monitor.monitors.feeds import FEED_SOURCES, parse_feed_xml
+from mbp_monitor.notifiers import send_ntfy
 
 
 def _test_settings(tmp_dir: Path, **overrides) -> Settings:
@@ -231,6 +235,40 @@ class ParserTests(unittest.TestCase):
         self.assertEqual(len(res), 1)
         self.assertEqual(res[0].price, 1549.99)
         self.assertEqual(res[0].ram_gb, 24)
+
+
+class NotifierTests(unittest.TestCase):
+    def test_ntfy_headers_are_ascii_safe(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            s = _test_settings(Path(td), ntfy_topic="test-topic-123")
+            listing = DealListing(
+                source="test",
+                retailer="Test — Retailer ‑ Austin",
+                title="Apple 14\u201d MacBook Pro M5 \u2014 24GB",
+                url="https://example.com/deal?q=14\u201d",
+                price=1499.0,
+                condition=Condition.NEW,
+                chip="M5",
+                ram_gb=24,
+                storage_gb=1024,
+                sku="MDE34LL/A",
+            )
+            ev = evaluate_deal(listing, s)
+            assert ev is not None
+
+            captured_headers: dict[str, str] = {}
+
+            def handler(request: httpx.Request) -> httpx.Response:
+                captured_headers.update(dict(request.headers))
+                return httpx.Response(200, text="ok")
+
+            async def _run() -> None:
+                async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
+                    await send_ntfy(client, s, ev, "test")
+
+            asyncio.run(_run())
+            self.assertIn("title", captured_headers)
+            captured_headers["title"].encode("ascii")
 
 
 if __name__ == "__main__":

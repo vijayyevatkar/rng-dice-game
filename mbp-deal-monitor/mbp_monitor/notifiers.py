@@ -14,13 +14,28 @@ from .models import AlertTier, EvaluatedDeal
 logger = logging.getLogger(__name__)
 
 
+def _ascii_header(val: str) -> str:
+    replacements = {
+        "\u2014": "-",
+        "\u2013": "-",
+        "\u2011": "-",
+        "\u2018": "'",
+        "\u2019": "'",
+        "\u201c": '"',
+        "\u201d": '"',
+    }
+    for src, dst in replacements.items():
+        val = val.replace(src, dst)
+    return val.encode("ascii", errors="ignore").decode("ascii")
+
+
 def format_deal_headline(deal: EvaluatedDeal, reason: str = "") -> str:
     l = deal.listing
     ram = f"{l.ram_gb}GB" if l.ram_gb else "?GB"
     ssd = f"{l.storage_gb // 1024}TB" if l.storage_gb and l.storage_gb >= 1024 else (f"{l.storage_gb}GB" if l.storage_gb else "")
     spec_str = " / ".join(p for p in [l.chip, ram, ssd, l.condition.value.replace("_", " ")] if p)
     prefix = "URGENT DEAL" if deal.tier == AlertTier.URGENT else "DEAL"
-    return f"[{prefix}] ${l.price:,.0f} — {l.retailer} ({spec_str})"
+    return f"[{prefix}] ${l.price:,.0f} - {l.retailer} ({spec_str})"
 
 
 def format_deal_body(deal: EvaluatedDeal, reason: str = "") -> str:
@@ -50,11 +65,11 @@ async def send_ntfy(client: httpx.AsyncClient, settings: Settings, deal: Evaluat
     priority = "5" if deal.tier == AlertTier.URGENT else "4"
     tags = "rotating_light,laptop" if deal.tier == AlertTier.URGENT else "moneybag,laptop"
     headers = {
-        "Title": title[:250],
+        "Title": _ascii_header(title)[:250],
         "Priority": priority,
         "Tags": tags,
-        "Click": deal.listing.url,
-        "Actions": f"view, Open Deal, {deal.listing.url}",
+        "Click": _ascii_header(deal.listing.url),
+        "Actions": f"view, Open Deal, {_ascii_header(deal.listing.url)}",
     }
     url = f"{settings.ntfy_server}/{settings.ntfy_topic}"
     r = await client.post(url, content=body.encode("utf-8"), headers=headers, timeout=10.0)
