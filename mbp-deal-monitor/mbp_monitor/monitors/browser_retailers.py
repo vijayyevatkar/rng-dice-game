@@ -434,8 +434,10 @@ async def fetch_browser_retailers(settings: Settings) -> list[DealListing]:
                     if html:
                         all_listings.extend(parse_microcenter_pdp(html, spec, spec.microcenter_url))
 
-            # 3. Best Buy Austin Local + Open-Box (skip if official API key handles it, or run as backup for local open-box)
-            bby_specs = [s for s in TRACKED_SPECS if s.bestbuy_url][:6]
+            # 3. Best Buy Austin Local + Open-Box (check all tracked URLs when no API key is set)
+            bby_specs = [s for s in TRACKED_SPECS if s.bestbuy_url]
+            if settings.bestbuy_api_key:
+                bby_specs = bby_specs[:6]
             for spec in bby_specs:
                 html = await _fetch_page_html(context, spec.bestbuy_url, wait_ms=3000)
                 if html:
